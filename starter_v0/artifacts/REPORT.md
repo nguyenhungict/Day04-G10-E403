@@ -3,7 +3,14 @@
 ## Team
 
 - Team: G10-E403
-- Members: 7 thành viên — cập nhật họ tên trước khi nộp chính thức
+- Members:
+  - Nguyễn Hoàng Thảo Tiên
+  - Nguyễn Duy Hưng
+  - Ngô Hoàng Phú
+  - Đoàn Duy Chiến
+  - Nguyễn Xuân Kiên
+  - Nguyễn Trung Long
+  - Trần Bảo Phúc
 - Provider/model: OpenRouter / `openai/gpt-4o-mini`
 - Final artifact: `v3+pc0e57b1c7965+t84a3f7ce2333`
 
