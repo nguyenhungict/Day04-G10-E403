@@ -1,20 +1,20 @@
 {
-  "run_id": "v1_B_group_openrouter_20260729T164903337617",
+  "run_id": "v1_B_group_openrouter_20260729T165434515334",
   "version": "v1",
-  "artifact_version": "v1+p4627ca673740+t1fc817854f3e",
-  "prompt_hash": "4627ca673740b67f14433a2f5759c178d034435b466a51d3dc391c8a6cc744b3",
-  "tools_hash": "1fc817854f3ed4111f7704f3d08309106a0a3a69f18993c56b4990bb5aab975c",
+  "artifact_version": "v1+pd174628eb08d+t228faebbfeac",
+  "prompt_hash": "d174628eb08db25a92795969fae1c13bd68008a238df06f7b8a093cf4d3150eb",
+  "tools_hash": "228faebbfeac3bbef5d9cf846ef8aa3f69cafb52540e8e5c30e9e20b57d09fb0",
   "phase": "B",
   "suite": "group",
   "provider": "openrouter",
   "model": "openai/gpt-4o-mini",
-  "system_prompt": "E:\\VINUNI\\Lab4\\Day04-G10-E403\\starter_v0\\artifacts\\system_prompt.md",
-  "tools": "E:\\VINUNI\\Lab4\\Day04-G10-E403\\starter_v0\\artifacts\\tools.yaml",
+  "system_prompt": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\claude\\e--VINUNI-Lab4\\6daf0ecb-12e8-48ea-b4c0-7e9b334063da\\scratchpad\\v1_artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\claude\\e--VINUNI-Lab4\\6daf0ecb-12e8-48ea-b4c0-7e9b334063da\\scratchpad\\v1_artifacts\\tools.yaml",
   "eval_cases": "data\\eval_group.json",
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
   "description": "Bộ team eval do nhóm G10 tự thiết kế: đúng 10 case gồm 5 single-turn (dùng query) và 5 multi-turn (dùng turns). Bộ case phủ đủ 6 failure_type trong allowed_failure_types và chạm tới các tool mà eval_base.json chưa kiểm tra (papers, policy, format). Với các argument dạng free-text tiếng Việt, case chỉ assert đúng argument mang tính phân biệt (subset match) để tránh chấm sai vì khác cách diễn đạt.",
-  "generated_at": "2026-07-29T16:49:03",
+  "generated_at": "2026-07-29T16:54:34",
   "summary": {
     "total_cases": 10,
     "measured_cases": 10,
@@ -58,6 +58,7 @@
             "name": "papers",
             "args": {
               "query": "multimodal learning",
+              "max_results": 5,
               "sort_by": "lastUpdatedDate"
             }
           }
@@ -73,6 +74,7 @@
           "tool": "papers",
           "args": {
             "query": "multimodal learning",
+            "max_results": 5,
             "sort_by": "lastUpdatedDate"
           },
           "result": {
@@ -354,7 +356,7 @@
           {
             "name": "clarify",
             "args": {
-              "question": "Bạn có thể cung cấp tên tài khoản Twitter mà bạn muốn tóm tắt các tweet không?",
+              "question": "Bạn cần cung cấp tên tài khoản Twitter để tôi có thể lấy các tweet mới nhất.",
               "response_type": "text"
             }
           }
@@ -369,12 +371,12 @@
         {
           "tool": "clarify",
           "args": {
-            "question": "Bạn có thể cung cấp tên tài khoản Twitter mà bạn muốn tóm tắt các tweet không?",
+            "question": "Bạn cần cung cấp tên tài khoản Twitter để tôi có thể lấy các tweet mới nhất.",
             "response_type": "text"
           },
           "result": {
             "tool": "ask_user",
-            "question": "Bạn có thể cung cấp tên tài khoản Twitter mà bạn muốn tóm tắt các tweet không?",
+            "question": "Bạn cần cung cấp tên tài khoản Twitter để tôi có thể lấy các tweet mới nhất.",
             "response_type": "text",
             "options": [],
             "awaiting_user": true
@@ -400,7 +402,7 @@
         "routing_correct": true,
         "args_correct": true,
         "actual_tool_calls": [],
-        "actual_text": "Dưới đây là một hàm Python đơn giản để sắp xếp một danh sách:\n\n```python\ndef sort_list(input_list):\n    return sorted(input_list)\n\n# Ví dụ sử dụng\nmy_list = [5, 2, 9, 1, 5, 6]\nsorted_list = sort_list(my_list)\nprint(sorted_list)  # Kết quả: [1, 2, 5, 5, 6, 9]\n```\n\nHàm `sort_list` sử dụng hàm `sorted()` để trả về một danh sách đã được sắp xếp. Bạn có thể thay thế `input_list` bằng bất kỳ danh sách nào mà bạn muốn sắp xếp.",
+        "actual_text": "Dưới đây là một hàm Python đơn giản để sắp xếp một danh sách:\n\n```python\ndef sort_list(input_list):\n    return sorted(input_list)\n\n# Ví dụ sử dụng\nmy_list = [5, 2, 9, 1, 5, 6]\nsorted_list = sort_list(my_list)\nprint(sorted_list)  # Kết quả: [1, 2, 5, 5, 6, 9]\n```\n\nHàm `sort_list` sử dụng hàm `sorted()` để trả về một danh sách đã được sắp xếp. Bạn có thể thay thế `input_list` bằng bất kỳ danh sách nào bạn muốn sắp xếp.",
         "case_failure_type": "out_of_scope",
         "observed_mismatch": null,
         "failure_type": null,
@@ -480,8 +482,8 @@
                 "date": "Wed Jul 29 07:34:34 +0000 2026",
                 "metrics": {
                   "favorites": 0,
-                  "retweets": 158,
-                  "views": "475545"
+                  "retweets": 159,
+                  "views": "479062"
                 }
               },
               {
@@ -492,8 +494,8 @@
                 "date": "Wed Jul 29 07:33:51 +0000 2026",
                 "metrics": {
                   "favorites": 0,
-                  "retweets": 942,
-                  "views": "356388"
+                  "retweets": 945,
+                  "views": "358548"
                 }
               },
               {
@@ -505,7 +507,7 @@
                 "metrics": {
                   "favorites": 0,
                   "retweets": 165,
-                  "views": "348539"
+                  "views": "350694"
                 }
               },
               {
@@ -516,8 +518,8 @@
                 "date": "Wed Jul 29 07:33:32 +0000 2026",
                 "metrics": {
                   "favorites": 0,
-                  "retweets": 174,
-                  "views": "356338"
+                  "retweets": 175,
+                  "views": "358718"
                 }
               },
               {
@@ -527,9 +529,9 @@
                 "source": "@elonmusk",
                 "date": "Wed Jul 29 07:31:29 +0000 2026",
                 "metrics": {
-                  "favorites": 9467,
-                  "retweets": 795,
-                  "views": "1197825"
+                  "favorites": 9756,
+                  "retweets": 818,
+                  "views": "1241536"
                 }
               }
             ]
@@ -568,7 +570,7 @@
         "routing_correct": true,
         "args_correct": true,
         "actual_tool_calls": [],
-        "actual_text": "Tôi có thể hỗ trợ bạn với các yêu cầu như:\n\n- Nghiên cứu trên web và mạng xã hội\n- Đọc và phân tích nội dung từ các URL cụ thể\n- Định dạng các mục nghiên cứu hiện có\n- Tra cứu chính sách nội bộ\n- Tìm kiếm các bài báo học thuật\n\nNếu bạn có yêu cầu cụ thể nào, hãy cho tôi biết!",
+        "actual_text": "Tôi có thể hỗ trợ bạn với các yêu cầu như:\n\n- Nghiên cứu trên web\n- Nghiên cứu trên mạng xã hội\n- Đọc nội dung từ URL cụ thể\n- Định dạng các mục nghiên cứu hiện có\n- Tra cứu chính sách nội bộ\n- Tìm kiếm bài báo khoa học\n\nNếu bạn có yêu cầu cụ thể nào, hãy cho tôi biết!",
         "case_failure_type": "unnecessary_tool",
         "observed_mismatch": null,
         "failure_type": null,
@@ -850,8 +852,8 @@
                 "date": "Wed Jul 29 07:34:34 +0000 2026",
                 "metrics": {
                   "favorites": 0,
-                  "retweets": 158,
-                  "views": "475871"
+                  "retweets": 159,
+                  "views": "479062"
                 }
               },
               {
@@ -862,8 +864,8 @@
                 "date": "Wed Jul 29 07:33:51 +0000 2026",
                 "metrics": {
                   "favorites": 0,
-                  "retweets": 942,
-                  "views": "356388"
+                  "retweets": 945,
+                  "views": "358548"
                 }
               },
               {
@@ -875,7 +877,7 @@
                 "metrics": {
                   "favorites": 0,
                   "retweets": 165,
-                  "views": "348539"
+                  "views": "350937"
                 }
               }
             ]
