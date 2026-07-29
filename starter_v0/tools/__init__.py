@@ -17,6 +17,7 @@ from .policy.tool import search_company_policy
 from .social_search.tool import search_tweets
 from .send.tool import send_telegram
 from .lookup.tool import web_search
+from .request_guard.tool import request_guard
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -35,6 +36,7 @@ TOOL_FUNCTIONS = {
     "policy": search_company_policy,
     "papers": arxiv_search,
     "paper_text": get_arxiv_paper_text,
+    "request_guard": request_guard,
 }
 
 
@@ -43,12 +45,16 @@ def load_tool_declarations(path: Path) -> list[dict[str, Any]]:
 
 
 def to_openai_tools(declarations: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [{
-        "type": "function",
-        "function": {
-            "name": item["name"],
-            "description": item.get("description", ""),
-            "parameters": item.get("parameters", {"type": "object", "properties": {}}),
-        },
-    } for item in declarations]
-
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": item["name"],
+                "description": item.get("description", ""),
+                "parameters": item.get(
+                    "parameters", {"type": "object", "properties": {}}
+                ),
+            },
+        }
+        for item in declarations
+    ]
