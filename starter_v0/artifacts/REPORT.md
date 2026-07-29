@@ -10,6 +10,13 @@
 - Members:
 - Provider/model:
 
+## Baseline v0 ghi nhận
+
+- Run file: [starter_v0/runs/v0_B_base_openrouter_20260729T150801391895.json](starter_v0/runs/v0_B_base_openrouter_20260729T150801391895.json)
+- Metric baseline: case_accuracy = 0.70, tool_routing_accuracy = 0.70, argument_accuracy = 0.70, multiturn_accuracy = 1.00
+- Số case fail: 6/20, tập trung ở missing_info, out_of_scope và wrong_boundary
+- Hypothesis đầu tiên: nếu prompt nhấn mạnh rõ quy tắc clarify/confirm/no-tool và ưu tiên routing đúng cho câu hỏi tweet/news/web, lỗi missing_info và wrong_tool sẽ giảm rõ rệt.
+
 ---
 
 # PHẦN A — Giới thiệu agent
@@ -64,7 +71,7 @@ Fill from `artifacts/version_log.csv` and `runs/*.json`.
 
 | Version | Prompt/tool change | Hypothesis | Metric name | Before | After | Run File |
 |---|---|---|---|---:|---:|---|
-| v0 | baseline |  |  |  |  |  |
+| v0 | baseline | Prompt cần nhấn mạnh clarify/confirm/no-tool | case_accuracy |  | 0.70 | [starter_v0/runs/v0_B_base_openrouter_20260729T150801391895.json](starter_v0/runs/v0_B_base_openrouter_20260729T150801391895.json) |
 | v1 |  |  |  |  |  |  |
 | v2 |  |  |  |  |  |  |
 | v3 |  |  |  |  |  |  |
@@ -75,9 +82,12 @@ Use actual failures from `results[*].result.failures`.
 
 | Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
 |---|---|---|---|---|
-|  |  |  |  |  |
-
-## B3. Team eval cases
+| R08_out_of_scope | out_of_scope | none / unexpected tool call | Agent gọi tool cho câu hỏi ngoài phạm vi | Bắt buộc rule no-tool cho intent ngoài scope |
+| R10_missing_handle | missing_info | timeline | Agent thiếu clarify khi handle bị thiếu và gọi tool ngay | Prompt phải yêu cầu hỏi lại trước khi dùng tool |
+| R11_missing_url | missing_info | fetch | Agent thiếu clarify cho URL bị thiếu và gọi fetch | Thêm rule ask_user khi thông tin thiếu |
+| R12_confirm_before_send | wrong_boundary | send | Agent bỏ qua bước xác nhận trước khi gửi | Nhấn mạnh confirm-before-send trong prompt |
+| R13_parallel_web_and_tweets | wrong_tool | timeline | Agent chọn timeline thay vì social_search cho câu hỏi tweet theo chủ đề | Cần routing rõ cho tweet-topic vs user-timeline |
+| R14_out_of_scope_coding | out_of_scope | none / unexpected tool call | Agent gọi tool cho câu hỏi coding không liên quan | Dùng rule no-tool cho câu hỏi ngoài scope |
 
 List the 10 cases added to `data/eval_group.json`:
 
