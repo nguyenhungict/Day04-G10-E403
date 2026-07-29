@@ -1,50 +1,48 @@
 {
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
-  "description": "Template để NHÓM tự viết đúng 10 case: 5 single-turn dùng query và 5 multi-turn dùng turns. Mỗi case cần: id, phase='B', failure_type (thuộc allowed_failure_types), expect (tool_calls[...] hoặc no_tool=true), và metadata.what_it_tests. File để trống có chủ đích vì mỗi nhóm phải tự thiết kế các case này.",
+  "description": "Bộ team eval do nhóm G10 tự thiết kế: đúng 10 case gồm 5 single-turn (dùng query) và 5 multi-turn (dùng turns). Bộ case phủ đủ 6 failure_type trong allowed_failure_types và chạm tới các tool mà eval_base.json chưa kiểm tra (papers, policy, format). Với các argument dạng free-text tiếng Việt, case chỉ assert đúng argument mang tính phân biệt (subset match) để tránh chấm sai vì khác cách diễn đạt.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
   "cases": [
     {
-      "id": "G01_news_lookup",
+      "id": "G01_papers_latest",
       "phase": "B",
       "suite": "group",
-      "query": "Tin AI hôm nay có gì đáng chú ý?",
+      "query": "Tìm giúp mình các bài báo mới nhất trên arXiv về multimodal learning",
       "failure_type": "wrong_arg_value",
       "expect": {
         "tool_calls": [
           {
-            "name": "lookup",
+            "name": "papers",
             "args": {
-              "query": "AI",
-              "topic": "news",
-              "timeframe": "day"
+              "query": "multimodal learning",
+              "sort_by": "lastUpdatedDate"
             }
           }
         ]
       },
       "metadata": {
-        "what_it_tests": "Single-turn: nhấn mạnh routing sang lookup và truyền đúng topic/news + timeframe=day."
+        "what_it_tests": "Single-turn: routing sang papers thay vì lookup, và ánh xạ 'mới nhất' -> sort_by=lastUpdatedDate thay vì relevance mặc định."
       }
     },
     {
-      "id": "G02_social_top",
+      "id": "G02_policy_citation",
       "phase": "B",
       "suite": "group",
-      "query": "Những tweet phổ biến nhất về Claude là gì?",
-      "failure_type": "wrong_arg_value",
+      "query": "Công ty mình có quy định nội bộ nào về việc trích dẫn nguồn khi viết báo cáo không?",
+      "failure_type": "wrong_tool",
       "expect": {
         "tool_calls": [
           {
-            "name": "social_search",
+            "name": "policy",
             "args": {
-              "query": "Claude",
-              "search_type": "Top"
+              "policy_area": "source_citation"
             }
           }
         ]
       },
       "metadata": {
-        "what_it_tests": "Single-turn: routing đúng sang social_search và chọn search_type=Top cho câu hỏi phổ biến/top."
+        "what_it_tests": "Single-turn: câu hỏi về quy định nội bộ phải dùng policy (tài liệu nội bộ) chứ không phải lookup ra web, và chọn đúng policy_area=source_citation."
       }
     },
     {
@@ -132,37 +130,29 @@
       }
     },
     {
-      "id": "M02_switch_to_news",
+      "id": "M02_cancel_then_capability",
       "phase": "B",
       "suite": "group",
       "turns": [
         {
           "role": "user",
-          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+          "content": "Tìm giúp mình tin AI hôm nay"
         },
         {
           "role": "user",
-          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+          "content": "Thôi khỏi tìm nữa, bỏ qua yêu cầu đó đi"
         },
         {
           "role": "user",
-          "content": "Giữ chủ đề OpenAI"
+          "content": "Chỉ cần cho mình biết bạn hỗ trợ được những việc gì thôi"
         }
       ],
-      "failure_type": "wrong_tool",
+      "failure_type": "unnecessary_tool",
       "expect": {
-        "tool_calls": [
-          {
-            "name": "lookup",
-            "args": {
-              "query": "OpenAI",
-              "topic": "news"
-            }
-          }
-        ]
+        "no_tool": true
       },
       "metadata": {
-        "what_it_tests": "Multi-turn: agent phải chuyển tool từ social_search sang lookup khi người dùng đổi sang web news."
+        "what_it_tests": "Multi-turn: người dùng đã hủy yêu cầu tìm kiếm và lượt cuối chỉ hỏi về năng lực của agent; gọi bất kỳ tool nào đều là unnecessary_tool."
       }
     },
     {
@@ -192,38 +182,36 @@
       }
     },
     {
-      "id": "M04_carryover_timeframe",
+      "id": "M04_format_after_lookup",
       "phase": "B",
       "suite": "group",
       "turns": [
         {
           "role": "user",
-          "content": "Tin AI hôm nay có gì?"
+          "content": "Tìm giúp mình 5 tin AI nổi bật hôm nay"
         },
         {
           "role": "user",
-          "content": "Còn về robotics thì sao?"
+          "content": "Mình đã có đủ 5 tin rồi, không cần tìm thêm nữa"
         },
         {
           "role": "user",
-          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+          "content": "Giờ gói 5 tin đó lại thành một thread Twitter giúp mình"
         }
       ],
-      "failure_type": "wrong_arg_value",
+      "failure_type": "wrong_tool",
       "expect": {
         "tool_calls": [
           {
-            "name": "lookup",
+            "name": "format",
             "args": {
-              "query": "robotics",
-              "topic": "news",
-              "timeframe": "day"
+              "template": "thread"
             }
           }
         ]
       },
       "metadata": {
-        "what_it_tests": "Multi-turn: giữ topic/news và timeframe=day từ vòng trước, chỉ đổi query thành robotics."
+        "what_it_tests": "Multi-turn: khi item đã có sẵn và người dùng chỉ yêu cầu trình bày lại, agent phải dùng format với template=thread thay vì gọi lookup lần nữa."
       }
     },
     {
