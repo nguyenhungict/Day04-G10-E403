@@ -99,31 +99,31 @@ tools:
       required: [text]
 
   - name: policy
-    description: "Tìm trong tài liệu nội bộ."
+    description: "Search internal company policy markdown. Use for questions about data privacy, source citation, AI research rules, external publishing, and tool usage. Do not use for public web news or social posts."
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Truy vấn"}
-        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Nhóm"}
-        top_k: {type: integer, default: 3, description: "Số mục"}
+        query: {type: string, default: "", description: "Policy question or keywords to search for"}
+        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Use a specific area only when the request clearly names it; otherwise all"}
+        top_k: {type: integer, default: 3, description: "Number of policy matches to return"}
       required: [query]
 
   - name: papers
-    description: "Tìm bài báo khoa học."
+    description: "Search arXiv for academic papers by topic. Use for requests asking for papers, research papers, arXiv work, studies, or literature on a topic. Do not use to read a specific paper's PDF text; use paper_text for a supplied arXiv ID or URL."
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa"}
-        max_results: {type: integer, default: 5, description: "Số lượng"}
-        sort_by: {type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "Sắp xếp"}
+        query: {type: string, default: "", description: "Academic topic or paper search query"}
+        max_results: {type: integer, default: 5, description: "Maximum paper results requested"}
+        sort_by: {type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "Use lastUpdatedDate for recent/latest papers, submittedDate for newly submitted papers, otherwise relevance"}
       required: [query]
 
   - name: paper_text
-    description: "Lấy nội dung text của một bài báo."
+    description: "Extract text from a specific arXiv paper when the user provides an arXiv ID or arXiv URL. Do not use for broad paper discovery; use papers for topic searches."
     parameters:
       type: object
       properties:
-        arxiv_url: {type: string, default: "", description: "ID hoặc địa chỉ"}
-        max_pages: {type: integer, default: 5, description: "Số trang"}
-        max_chars: {type: integer, default: 8000, description: "Số ký tự"}
+        arxiv_url: {type: string, default: "", description: "Exact arXiv ID or URL provided by the user"}
+        max_pages: {type: integer, default: 5, description: "Maximum PDF pages to extract"}
+        max_chars: {type: integer, default: 8000, description: "Maximum extracted characters"}
       required: [arxiv_url]
