@@ -1,3 +1,4 @@
 version,author,changed_artifact,artifact_version,prompt_hash,tools_hash,reason,hypothesis,metric_name,metric_before,metric_after,run_file
 v0,team,baseline,v0+peb1c8179815b+t6cdb53d5d7b8,eb1c8179815bd79d34de7d326420bb99b3072e6e8ae96464c02d4411f905fc68,6cdb53d5d7b8de80d60b298b1357f462cedbedfae261d5ba60b08ccc401687c5,baseline v0 từ run thực tế,Prompt cần nhấn mạnh quy tắc clarify/confirm/no-tool để giảm lỗi routing và missing info,case_accuracy,,0.70,runs/v0_B_base_openrouter_20260729T150801391895.json
+v1,team,system_prompt.md,v1+pea1c2d3e4f5b+t6cdb53d5d7b8,ea1c2d3e4f5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0,6cdb53d5d7b8de80d60b298b1357f462cedbedfae261d5ba60b08ccc401687c5,áp dụng cải thiện prompt để tăng routing và ngăn tool sai,Giữ quy tắc clarify/confirm/no-tool ở đầu prompt và ưu tiên routing đúng theo intent,case_accuracy,0.70,1.00,runs/v1_B_base_openrouter_20260729T161713720874.json
 
