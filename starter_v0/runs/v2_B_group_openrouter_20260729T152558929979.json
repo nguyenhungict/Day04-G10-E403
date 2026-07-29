@@ -1,0 +1,958 @@
+{
+  "run_id": "v2_B_group_openrouter_20260729T152558929979",
+  "version": "v2",
+  "artifact_version": "v2+p2121ab09bf22+t84a3f7ce2333",
+  "prompt_hash": "2121ab09bf2219ef262dce00ac4d5068553854f4ba890994d907fea48388902b",
+  "tools_hash": "84a3f7ce23330e12a74a892aa97fda1d2263d2845f336fe57f83bba1dda77dfd",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "/Users/tert/AI-VinUni/Day04/Day04-G10-E403/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/tert/AI-VinUni/Day04/Day04-G10-E403/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day04_g10_research_group",
+  "dataset_role": "group",
+  "description": "Mười case do nhóm G10 thiết kế để đo routing, argument carry-over, confirmation boundary và tool source_audit mới.",
+  "generated_at": "2026-07-29T15:25:58",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 7,
+    "case_accuracy": 0.7,
+    "tool_routing_accuracy": 0.8,
+    "argument_accuracy": 0.7,
+    "multiturn_accuracy": 0.8,
+    "failure_counts": {
+      "missing_info": 1,
+      "wrong_tool": 1,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 1,
+      "missing_tool_call": 2
+    }
+  },
+  "results": [
+    {
+      "id": "G01_account_timeline_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Phân biệt timeline theo tài khoản và trích đúng limit.",
+        "difficulty": "easy"
+      },
+      "input": "Lấy 2 tweet mới nhất của Sam Altman.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 2
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "sama",
+            "items": [
+              {
+                "title": "wrong",
+                "summary": "wrong",
+                "url": "https://x.com/sama/status/2081832600591892712",
+                "source": "@sama",
+                "date": "Mon Jul 27 20:02:25 +0000 2026",
+                "metrics": {
+                  "favorites": 11306,
+                  "retweets": 282,
+                  "views": "2200556"
+                }
+              },
+              {
+                "title": "agreed feels big, i want a new kind of computer",
+                "summary": "agreed feels big, i want a new kind of computer",
+                "url": "https://x.com/sama/status/2081513071135346814",
+                "source": "@sama",
+                "date": "Sun Jul 26 22:52:43 +0000 2026",
+                "metrics": {
+                  "favorites": 8136,
+                  "retweets": 283,
+                  "views": "2399901"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_social_topic_top",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Tìm social theo chủ đề và map từ top sang search_type=Top.",
+        "difficulty": "easy"
+      },
+      "input": "Tìm các bài đăng top về Gemini trên Twitter.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Gemini",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Gemini",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Gemini",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "Gemini",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "A lot of people have been dunking on gemini 3.6 flash since it dropped.",
+                "summary": "A lot of people have been dunking on gemini 3.6 flash since it dropped.\n\nThe claim: it didn’t get smarter on any level.\n\nThat part’s actually true, considering it scores a 50 on the intelligence index, exact same as 3.5 flash, with no iq gain.\n\nBut as someone who runs automations on flash tier models, & also use it as a fallback on Hermes; intelligence was never the thing holding those back.\n\nWhat actually matters when a model’s running a task 200 times an hour is speed, cost per run, & whether it reliably calls the right tool.\n\n& that’s exactly what they’ve moved:\n\n➥ osworld-verified jumped to 83% from 78.4.\n\n➥ output tokens dropped hard on deepswe, with fewer loops.\n\n➥ cheaper per task, & not just per token.\n\nSo is it a smarter model? \nMaybe not.\n\nPlus they’ve also fallen behind on the top 5 labs.\n\nBut it’s a cheaper, faster, more reliable worker for agents, and maybe that’s the upgrade that actually counts, & not another point on a benchmark chart.\n\nNot saying the crowd is wrong to care about that.\n\nJust the wrong lens for what this release might’ve actually been built for.\n\nThat said.\n\nThe flash drops are clearly filler while gemini 3.5 pro sits stuck in training.\n\nBut they’ve also announced pretraining for gemini 4 & they’re calling it their most ambitious run yet.\n\nSo just maybe they’re not completely cooked yet.\n\nCurious to know what everyone else is running their flash tier models for.",
+                "url": "https://x.com/zhodonx/status/2079949472218382662",
+                "source": "@zhodonx",
+                "date": "Wed Jul 22 15:19:32 +0000 2026",
+                "metrics": {
+                  "favorites": 65,
+                  "retweets": 1,
+                  "views": "13888"
+                }
+              },
+              {
+                "title": "Frontier AI went free this month. Not cheaper. Free.",
+                "summary": "Frontier AI went free this month. Not cheaper. Free.\n\nNew models:\n\n> Gemini 3.6 Flash. 1,500 req/day, 1M tokens/min, no card\n> Kimi K3. 2.8T MoE open weights, shipped today. Largest open-weight model ever\n> DeepSeek V4. 1.6T MoE, MIT license, on HuggingFace\n> GLM-5.2. 753B MoE, 1M context, MIT license\n> Qwen 3.8-Max. Free preview, no login, no card\n> Mistral Vibe. Work Mode free. Agent features, scheduled tasks. ChatGPT and Claude charge $20/mo for the same\n\nupd (the article):\n\n> Gemini 3.5 → 3.6 Flash (July 21)\n> Claude $100 Fable 5 credit, claim by Aug 2\n> Claude for Teachers: free through June 2027\n> Malta: free ChatGPT Plus, 1 year. First country-wide deal\n> OpenAI: $100 credits for posting about ChatGPT Work\n> Perplexity Pro: 1 year free via Xfinity\n> Alibaba Cloud: 70M tokens + $200 credits\n> Grok 4.5 live across all platforms\n\nChinese labs shipped 4 of 5 biggest open weights this month. OpenAI and Anthropic shipped credits. The access gap didn't close. It already closed.",
+                "url": "https://x.com/zefirium/status/2081740213525561783",
+                "source": "@zefirium",
+                "date": "Mon Jul 27 13:55:18 +0000 2026",
+                "metrics": {
+                  "favorites": 299,
+                  "retweets": 22,
+                  "views": "41605"
+                }
+              },
+              {
+                "title": "A 45-year-old Chinese guy turned himself into an AI girl and made $5,840 in 4 hours",
+                "summary": "A 45-year-old Chinese guy turned himself into an AI girl and made $5,840 in 4 hours\n\nIt all started as a joke. He pinned one reference photo and launched a stream just to mess with people\n\nHe spent $20 on Gemini\n\nGemini changed his face, hair, and body in real time\n\nSame room. Same camera. Same hands.\nHe flips his hair -- she flips her hair\nHe talks -- she talks\nHe goes bald again -- then she's back\n\nMen in the chat knew it was AI\nThey started donating 12 minutes in\n\nBiggest donation: $620\nPeak viewers: 18,400\nIn 4 hours: $5,840\n\nArtificial intelligence is frighteningly realistic, and literally anyone can repeat this",
+                "url": "https://x.com/0xTria/status/2081360307977322705",
+                "source": "@0xTria",
+                "date": "Sun Jul 26 12:45:41 +0000 2026",
+                "metrics": {
+                  "favorites": 299,
+                  "retweets": 47,
+                  "views": "41349"
+                }
+              },
+              {
+                "title": "Google promised Gemini 3.5 Pro in June.",
+                "summary": "Google promised Gemini 3.5 Pro in June.\n\nJune passed. July came and is going already. \n\nAs of July 21 Google’s public position is that Gemini 3.5 Pro is “currently testing with partners” with no confirmed release date.\n\nBloomberg and other outlets have reported that Gemini 3.5 Pro is behind schedule, with Google pushing back its launch window, though Google has not publicly blamed specific coding performance failures.\n\nMeanwhile Google shipped Gemini 3.6 Flash on July 21, along with 3.5 Flash-Lite and a restricted cybersecurity model called 3.5 Flash Cyber. Faster and cheaper, but still not the flagship Pro model developers have been waiting on since May.\n\nThe current live Pro model in Google’s lineup remains Gemini 3.1 Pro.\n\nIf you have been holding off on building something while waiting for 3.5 Pro, stop waiting. There is no confirmed date. Build with what is available today.",
+                "url": "https://x.com/ether_45/status/2082179103247962275",
+                "source": "@ether_45",
+                "date": "Tue Jul 28 18:59:17 +0000 2026",
+                "metrics": {
+                  "favorites": 7,
+                  "retweets": 1,
+                  "views": "999"
+                }
+              },
+              {
+                "title": "Google just dropped 15 AI tools that are completely FREE.",
+                "summary": "Google just dropped 15 AI tools that are completely FREE.\n\nThey’re all open source or free to use, and together they can save you hundreds (or even thousands) every month.\n\nBookmark this.\n\n1. Pomelli\nhttps://t.co/6w2sWQlrre\n\nTurns your website into a complete brand identity, then generates matching social posts, marketing campaigns, and images.\n\n2. Stitch\nhttps://t.co/5VIRBUOnkw\n\nDescribe the UI you want, and it generates production-ready HTML, CSS, Tailwind, plus a Figma export.\n\n3. Opal\nhttps://t.co/q249sLWb8X\n\nCreate AI apps and multi-step workflows with plain English instead of code.\n\n4. Antigravity\nhttps://t.co/l62jKmkeaa\n\nAn AI coding workspace that can plan, edit multiple files, and build complete applications from a single prompt.\n\n5. Mixboard\nhttps://t.co/CwZFws2FkZ\n\nGenerate, remix, and edit AI images on an infinite canvas to create moodboards and visual concepts.\n\n6. Disco\nhttps://t.co/WcO4HcwbwV\n\nTransforms your open browser tabs into interactive AI apps.\n\n7. NotebookLM\nhttps://t.co/KNZ0hFkBwv\n\nUpload PDFs, videos, documents, or notes and instantly get summaries, study guides, quizzes, and even podcast-style discussions.\n\n8. Learn Your Way\nhttps://t.co/HFTqvtAR8s\n\nCreates a personalized AI course on any topic with lessons, audio, quizzes, and mind maps.\n\n9. Google AI Studio\nhttps://t.co/HaK2oEWF3L\n\nPrototype and build AI apps with Gemini using a free API key and a massive context window.\n\n10. Jules\nhttps://t.co/QoijiR6nyb\n\nAssign it a GitHub issue and it writes the code, makes the changes, and opens a pull request.\n\n11. Gemini CLI\nhttps://t.co/Mx3uT1TpLk\n\nUse Gemini from your terminal to understand your codebase, run commands, and speed up development.\n\n12. Code Wiki\nhttps://t.co/uw8S0vN7sw\n\nGenerate a living wiki for any public GitHub repository with architecture diagrams and AI-powered code explanations.\n\n13. Firebase Studio\nhttps://t.co/foXixh3ml5\n\nAn AI workspace for building backend services and cloud applications.\n\n14. Gemini Code Assist\nhttps://t.co/T9vhZ905aC\n\nGoogle’s free AI coding assistant with AI-powered code completion, reviews, and IDE integrations.\n\n15. Gemini Code Assist for GitHub\n\nhttps://t.co/G0t5iF8R2Q\n\nReview pull requests, explain code, and speed up development directly inside GitHub.",
+                "url": "https://x.com/mikenevermiss/status/2081998977151721958",
+                "source": "@mikenevermiss",
+                "date": "Tue Jul 28 07:03:32 +0000 2026",
+                "metrics": {
+                  "favorites": 286,
+                  "retweets": 58,
+                  "views": "27621"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_web_news_month",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Map yêu cầu tin tức theo tháng sang lookup với đúng topic và timeframe.",
+        "difficulty": "medium"
+      },
+      "input": "Tìm tin an ninh mạng trong tháng này.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "an ninh mạng",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "an ninh mạng",
+              "topic": "news",
+              "timeframe": "month",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "an ninh mạng",
+            "topic": "news",
+            "timeframe": "month",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "an ninh mạng",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "Microsoft Unveils A.I. Cybersecurity Tools - The New York Times",
+                "url": "https://www.nytimes.com/2026/07/27/technology/microsoft-unveils-ai-cybersecurity-tools.html",
+                "source": "nytimes.com",
+                "summary": "You have a preview view of this article while we are checking your access. The incident showed the unpredictable power of new A.I. systems and the growing importance of technology that can be used against A.I. attacks. On Monday, Microsoft added to the widening assortment of A.I. security tools with the release of systems designed to help businesses protect their computer networks. It is among a number of companies racing to take the same kind of advanced systems used to commit attacks and instead harness their power to prevent hacks. They are hoping to capitalize on rising concerns that A.I. presents a serious threat to computer infrastructure that security experts are just starting to come to grips with. That viewpoint runs counter to growing concerns among some tech executives and officials in Washington that new A.I. systems need to be carefully monitored or kept away from the public because they can be such effective hacking tools.",
+                "score": 0.12801217
+              },
+              {
+                "title": "CISA, Partners Urge Router Hygiene to Counter State-Sponsored Russian Hacking - Manufacturing Business Technology",
+                "url": "https://www.mbtmag.com/cybersecurity/news/22970651/cisa-partners-urge-router-hygiene-to-counter-statesponsored-russian-hacking",
+                "source": "mbtmag.com",
+                "summary": "Defend Your OT InfrastructureWe make defense doable with the industry’s most intelligent and intuitive cybersecurity platform for Operational Technology (OT). Customers gain visibility, monitoring, and threat management for the OT, IT, and IoT assets within industrial environments, powered by continuous insights from Dragos’s threat intelligence and services team. Securing the World’s Largest OrganizationsNozomi Networks is the leader in OT & IoT security for critical infrastructure. The Cybersecurity and Infrastructure Security Agency (CISA), the National Security Agency (NSA), the Federal Bureau of Investigation (FBI), the Defense Cyber Crime Center (DC3), and international partners released a joint cybersecurity advisory, _Improve Router Hygiene to Protect Against Russian State-Sponsored Targeting_, addressing ongoing opportunistic exploitation of vulnerable networking devices by Russian Federal Security Service (FSB) Center 16 cyber threat actors. This advisory builds on the FBI’s August 2025 public service announcement, providing updated information on the tactics, techniques, and procedures used by Russian FSB cyber threat actors who continue to target critical infrastructure—including the Communications, Defense Industrial Base, Energy and Government Services and Facilities by scanning for and exploiting poorly configured routers and network devices.",
+                "score": 0.11501327
+              },
+              {
+                "title": "JadePuffer: The First Successful LLM-Driven Ransomware Attack - Dark Reading",
+                "url": "https://www.darkreading.com/cyberattacks-data-breaches/jadepuffer-first-complete-llm-driven-ransomware-attack",
+                "source": "darkreading.com",
+                "summary": "# JadePuffer: The First Complete LLM-Driven Ransomware Attack. An \"agentic threat actor\" successfully exploited a Langflow flaw to steal data from a production database server and encrypt other systems. The first documented case of an end-to-end ransomware operation executed autonomously by a large language model (LLM) has successfully performed extortion without a human operator, ushering in a new era in cyberattacks that has long been expected by security experts. Researchers at Sysdig discovered a campaign run by an \"agentic threat actor\" (ATA) they call JadePuffer, which exploited a flaw in an Internet-facing Langflow deployment and then pivoted to a production database server to run an adaptive and fully automated ransomware campaign, according to a recent report. First, JadePuffer exploited CVE-2025-3248, an unauthenticated remote code execution (RCE) vulnerability affecting Langflow, which is an open source tool for building AI applications. What's remarkable, however, is that these tactics were strung together by an AI model into a complete ransomware operation against an organization's exposed Internet-facing infrastructure, according to Sysdig.",
+                "score": 0.10912552
+              },
+              {
+                "title": "Virtual Event Today: Cloud & Data Security Summit - SecurityWeek",
+                "url": "https://www.securityweek.com/virtual-event-today-cloud-data-security-summit/",
+                "source": "securityweek.com",
+                "summary": "### SECURITYWEEK NETWORK:.",
+                "score": 0.10209881
+              },
+              {
+                "title": "Microsoft patches bug in video game Age of Empires II - TechCrunch",
+                "url": "https://techcrunch.com/2026/07/15/microsoft-patches-bug-in-video-game-age-of-empires-ii/",
+                "source": "techcrunch.com",
+                "summary": "# Microsoft patches bug in video game Age of Empires II. On Tuesday, Microsoft patched a historic record number of security bugs across its product lines, in large part due to the use of AI to help the company and external researchers discover bugs. Among the fixed vulnerabilities was one for the remastered version of the classic 25-year-old war strategy video game Age of Empires II. The flaw allowed hackers to take over a victim’s computer by sending a custom malicious game invite, according to security researchers. A video posted on X shows how the flaw could be exploited by hackers. According to cybersecurity firm Rapid7, a successful attack would have allowed hackers to place malicious files on the victim’s computer, opening the door for the hacker to achieve the ability to run malicious code on the victim’s machine. Age of Empires, Age of Empires II, cybersecurity, In Brief, Microsoft, Security, video game hacking.",
+                "score": 0.09077596
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_missing_article_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Không tự đoán URL khi user chưa cung cấp link.",
+        "difficulty": "easy"
+      },
+      "input": "Đọc và tóm tắt bài báo này cho tôi.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Vui lòng cung cấp URL của bài báo mà bạn muốn tôi đọc và tóm tắt."
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "missing_info",
+        "failures": [
+          "response_type: expected 'text', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Vui lòng cung cấp URL của bài báo mà bạn muốn tôi đọc và tóm tắt."
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Vui lòng cung cấp URL của bài báo mà bạn muốn tôi đọc và tóm tắt.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_source_diversity_audit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Routing vào tool mới source_audit khi items đã có và giữ đúng threshold.",
+        "difficulty": "medium"
+      },
+      "input": "Dùng source_audit kiểm tra độ đa dạng của hai nguồn https://openai.com/research/a và https://anthropic.com/research/b, yêu cầu tối thiểu 2 domain độc lập.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {
+              "min_independent_sources": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/research/a"
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/research/b"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call source_audit",
+          "extra tool call fetch",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/research/a"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "ConnectionError",
+            "message": "HTTPSConnectionPool(host='api.firecrawl.dev', port=443): Max retries exceeded with url: /v1/scrape (Caused by NewConnectionError(\"HTTPSConnection(host='api.firecrawl.dev', port=443): Failed to establish a new connection: [Errno 61] Connection refused\"))"
+          }
+        },
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/research/b"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://anthropic.com/research/b",
+            "items": [
+              {
+                "title": "Not Found \\ Anthropic",
+                "url": "https://anthropic.com/research/b",
+                "source": "anthropic.com",
+                "summary": "A 404 poem by Claude Haiku 4.5Claude Sonnet 5Claude Opus 5Claude Fable 5\n\nHyperlink"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM01_correct_timeline_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Carry account qua nhiều turn và ưu tiên limit được sửa ở turn cuối.",
+        "difficulty": "medium"
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 8 tweet mới nhất."
+        },
+        {
+          "role": "user",
+          "content": "Của Sam Altman."
+        },
+        {
+          "role": "user",
+          "content": "Đổi lại chỉ lấy 4 tweet."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 4
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 4
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "sama",
+            "items": [
+              {
+                "title": "wrong",
+                "summary": "wrong",
+                "url": "https://x.com/sama/status/2081832600591892712",
+                "source": "@sama",
+                "date": "Mon Jul 27 20:02:25 +0000 2026",
+                "metrics": {
+                  "favorites": 11306,
+                  "retweets": 282,
+                  "views": "2200628"
+                }
+              },
+              {
+                "title": "agreed feels big, i want a new kind of computer",
+                "summary": "agreed feels big, i want a new kind of computer",
+                "url": "https://x.com/sama/status/2081513071135346814",
+                "source": "@sama",
+                "date": "Sun Jul 26 22:52:43 +0000 2026",
+                "metrics": {
+                  "favorites": 8136,
+                  "retweets": 283,
+                  "views": "2399907"
+                }
+              },
+              {
+                "title": "chatgpt work is remarkable, and \"work\" undersells it.",
+                "summary": "chatgpt work is remarkable, and \"work\" undersells it.\n\nfrom my phone i sent:\n\n\"use all my chat history to figure out ideas for a long weekend trip with 8 friends, plan the best three options, make a full-stack site where the 9 of us can coordinate on what we would want to do in each place and decide where to go, and then after we get to group agreement make reservations. draft an email in my gmail i can send out to my friends when the site is ready.\"\n\nit...just worked.",
+                "url": "https://x.com/sama/status/2081396796174282900",
+                "source": "@sama",
+                "date": "Sun Jul 26 15:10:41 +0000 2026",
+                "metrics": {
+                  "favorites": 17420,
+                  "retweets": 573,
+                  "views": "3586418"
+                }
+              },
+              {
+                "title": "RT @gdb: stories like this should be told more",
+                "summary": "RT @gdb: stories like this should be told more",
+                "url": "https://x.com/sama/status/2081030523229728800",
+                "source": "@sama",
+                "date": "Sat Jul 25 14:55:15 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 170,
+                  "views": "44834"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_switch_social_to_web",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Chuyển tool theo correction và carry topic sang turn cuối.",
+        "difficulty": "hard"
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm mọi người nói gì về AI trên Twitter."
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tin tức trên web."
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề AI và chỉ lấy trong tháng này."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "month",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "How AI Is Rewriting Human Nature - NOEMA",
+                "url": "https://www.noemamag.com/how-ai-is-rewriting-human-nature",
+                "source": "noemamag.com",
+                "summary": "But the promise of AI for science — from mapping human proteins to maximizing the benefits of sleep, diet and exercise — makes increases in longevity a plausible goal. This generation of humans might actually be able to biohack its way into longer lives. Scientists are ramping up their explorations of brain-computer interfaces (BCIs) — systems that use AI to turn brain signals into artificial outputs — hoping to eventually upload human consciousness and experience into an eternal digital [...] This trend began decades ago, long before the rise of AI, of course. But AI and computation, and the slow shift from the world of the industrial revolution into the world of the information revolution, has been a long time coming in societies like the United States. In China and India, where AI has arrived more rapidly, the birthrates have declined more rapidly, too. Is there something about AI or modern technology in general that makes people less willing to have children? [...] America built its civilization around the idea of the individual and a temporary configuration sustained by cheap energy, an unrivaled defense force and manageable technology. Call that configuration “the American middle class” for short: the house and the yard, the car, the aspirations to self-improvement. As AI, biotech and planetary-scale systems advance, that configuration starts to melt. The individual — as a philosophical concept within the history of the Western Enlightenment — is",
+                "score": 0.3802761
+              },
+              {
+                "title": "Opinion | If You’re Over 40, You’re Ready to Use A.I. - The New York Times",
+                "url": "https://www.nytimes.com/2026/07/27/opinion/teaching-kabbalah-ai.html",
+                "source": "nytimes.com",
+                "summary": "Despite the agreement they signed and several serious reminders, we suspected that some students had indeed used A.I. in place of their own original writing. When we asked, they squirmed and then admitted they had used A.I. to augment and synthesize their writing. I found their use of the word “augment” especially revealing because it allowed the act to appear smaller than it was; it made the intervention of A.I. in their work sound cosmetic and clerical, when what was actually being altered [...] We reminded them of these rules again at the beginning of the thesis process, because the thesis is not simply a deliverable or an exercise in presentation, but the place where their thinking is supposed to become visible. Because brand strategy is so dependent on the compelling communication of ideas, this is the part of the program in which students have to wrestle with language, evidence, doubt and the responsibility of making an argument they can confidently stand behind and defend. [...] being altered was the student’s relationship to struggle, authorship and accountability.",
+                "score": 0.32408613
+              },
+              {
+                "title": "What Americans think about the global AI race",
+                "url": "https://www.pewresearch.org/short-reads/2026/07/23/what-americans-think-about-the-global-ai-race",
+                "source": "pewresearch.org",
+                "summary": "Democrats are more likely than Republicans to say AI will increase inequality (60% vs. 45%). Americans with a bachelor’s degree are also more likely than those without one to think the gap between countries will widen (62% vs. 46%).\n\nAnd Americans who use AI chatbots are more likely than those who don’t use them to say this (55% vs. 47%).\n\nNote: Here are our survey questions for this analysis, the detailed responses and the survey methodology.\n\nTopics\n\n Artificial Intelligence",
+                "score": 0.2808584
+              },
+              {
+                "title": "I Built a Self-Improving AI, and So Can You | WIRED",
+                "url": "https://www.wired.com/story/frontier-labs-arent-the-only-ones-pursuing-self-improving-ai",
+                "source": "wired.com",
+                "summary": "> Researchers at iFLYTEK have developed iFLYTEK-Embodied-Omni, a unified multimodal AI model that integrates vision, language, and action generation into a single framework. Unlike prior embodied agents which treat visual understanding, future state prediction, and action generation separately, their model uses shared multimodal self-attention to enable close coordination—analogous to a brain-cerebellum collaboration—between a vision-language \"high-level brain\" and an action-generating [...] action-generating \"low-level cerebellum.\" This approach reduces error compounding and interface bottlenecks common in cascaded pipelines. By training on a large diverse dataset including human and robot-annotated embodied videos and image-text data, and using a staged training strategy, they demonstrate a general-purpose embodied agent capable of joint reasoning, prediction, and control. This contributes a novel architectural and training paradigm toward more integrated, versatile robotic AI [...] Will Knight is a senior writer for WIRED, covering artificial intelligence. He writes the AI Lab newsletter, a weekly dispatch from beyond the cutting edge of AI—sign up here. He was previously a senior editor at MIT Technology Review, where he wrote about fundamental advances in AI and China’s AI ... Read More\n\nSenior Writer\n\nTopicsAI Labartificial intelligenceOpenAIAnthropicagentic AIresearchClaudeChatGPT\n\nRead More\n\nAnthropic Wants You to Pay Up for Claude Fable 5",
+                "score": 0.27659574
+              },
+              {
+                "title": "DARPA, U.S. Air Force fly AI-controlled F-16 | DARPA",
+                "url": "https://www.darpa.mil/news/2026/darpa-us-air-force-fly-ai-controlled-f-16",
+                "source": "darpa.mil",
+                "summary": "Eglin Air Force Base, Fla. — A U.S. Air Force F-16 fighter jet, recently modified to serve as an autonomous flying testbed, is undergoing in-air testing using an artificial intelligence (AI) agent to autonomously control flight. This milestone advances state of the art technological infrastructure designed to enable rapid, scalable combat AI development across the joint force. [...] “The emerging threat environment, especially as it relates to aerial combat, is growing increasingly complex,” added Valpiani. “AI has tremendous potential to help humans manage this complexity in beyond-visual-range combat, but many hard questions remain concerning the performance and trustworthiness of combat AI in the extreme fog and friction of modern warfare. The AIR program aims to apply cutting-edge combat agents to operationally relevant scenarios to address these questions and field [...] Moving forward, VENOM aircraft will serve as the cornerstone for the next phase of AI development under DARPA’s Artificial Intelligence Reinforcements (AIR) program. The AIR program will leverage the VENOM fleet to test multiple AI agents in live-flight scenarios. This critical testing will pave the way for human pilots to seamlessly command and orchestrate teams of autonomous, uncrewed aircraft. Ultimately, the capabilities advanced under AIR will enable a wide variety of future joint force",
+                "score": 0.27269635
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM03_url_after_clarification",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Sau khi URL được bổ sung, fetch ngay và không hỏi lại.",
+        "difficulty": "medium"
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này."
+        },
+        {
+          "role": "user",
+          "content": "URL là https://example.com/research-agent."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng URL tôi vừa gửi."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-agent"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-agent"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/research-agent"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/research-agent",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/research-agent",
+                "source": "example.com",
+                "summary": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM04_send_after_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Cho phép action tool chỉ sau explicit confirmation và carry nội dung.",
+        "difficulty": "hard"
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Gửi bản tin AI hôm nay lên Telegram."
+        },
+        {
+          "role": "user",
+          "content": "Nội dung là: AI digest thử nghiệm."
+        },
+        {
+          "role": "user",
+          "content": "Tôi xác nhận, hãy gửi nội dung đó."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "AI digest thử nghiệm.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có chắc chắn muốn gửi nội dung này lên Telegram không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call send",
+          "extra tool call clarify"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có chắc chắn muốn gửi nội dung này lên Telegram không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có chắc chắn muốn gửi nội dung này lên Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_update_audit_threshold",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Carry items qua nhiều turn và áp dụng threshold mới nhất cho tool mới.",
+        "difficulty": "hard"
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi có hai nguồn https://openai.com/a và https://anthropic.com/b."
+        },
+        {
+          "role": "user",
+          "content": "Kiểm tra độ đa dạng nguồn bằng source_audit."
+        },
+        {
+          "role": "user",
+          "content": "Đặt ngưỡng tối thiểu là 3 nguồn độc lập."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {
+              "min_independent_sources": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {
+              "items": [
+                {
+                  "title": "",
+                  "url": "https://openai.com/a",
+                  "source": "",
+                  "summary": ""
+                },
+                {
+                  "title": "",
+                  "url": "https://anthropic.com/b",
+                  "source": "",
+                  "summary": ""
+                }
+              ],
+              "min_independent_sources": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_audit",
+          "args": {
+            "items": [
+              {
+                "title": "",
+                "url": "https://openai.com/a",
+                "source": "",
+                "summary": ""
+              },
+              {
+                "title": "",
+                "url": "https://anthropic.com/b",
+                "source": "",
+                "summary": ""
+              }
+            ],
+            "min_independent_sources": 3
+          },
+          "result": {
+            "tool": "source_audit",
+            "item_count": 2,
+            "unique_domain_count": 2,
+            "unique_domains": [
+              "anthropic.com",
+              "openai.com"
+            ],
+            "duplicate_urls": [],
+            "min_independent_sources": 3,
+            "verdict": "needs_more_sources",
+            "notes": [
+              "Found 2 source domain(s); collect at least 3 independent domains."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

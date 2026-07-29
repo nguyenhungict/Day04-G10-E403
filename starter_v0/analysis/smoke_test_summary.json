@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-07-29T15:42:27+07:00",
+  "method": "Direct calls through tools.TOOL_FUNCTIONS with secrets loaded from local .env; no secret values logged.",
+  "provider_preflight": {
+    "provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "structured_tool_call": "timeline(screenname=sama, limit=1)",
+    "status": "PASS"
+  },
+  "checks": [
+    {
+      "tool": "lookup",
+      "provider": "Tavily",
+      "input_summary": "query=AI, max_results=1",
+      "error": null,
+      "item_count": 1,
+      "status": "PASS"
+    },
+    {
+      "tool": "fetch",
+      "provider": "Firecrawl",
+      "input_summary": "url=https://example.com",
+      "error": null,
+      "item_count": 1,
+      "status": "PASS"
+    },
+    {
+      "tool": "timeline",
+      "provider": "RapidAPI Twitter API45",
+      "input_summary": "screenname=sama, limit=1",
+      "error": null,
+      "item_count": 1,
+      "status": "PASS"
+    },
+    {
+      "tool": "social_search",
+      "provider": "RapidAPI Twitter API45",
+      "input_summary": "query=OpenAI, limit=1",
+      "error": null,
+      "item_count": 1,
+      "status": "PASS"
+    },
+    {
+      "tool": "source_audit",
+      "provider": "local",
+      "input_summary": "3 items, 2 independent domains, 1 duplicate URL",
+      "error": null,
+      "unique_domain_count": 2,
+      "duplicate_url_count": 1,
+      "status": "PASS"
+    }
+  ]
+}

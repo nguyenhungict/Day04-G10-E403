@@ -1,7 +1,279 @@
 {
-  "dataset_id": "day04_v2_research_group",
+  "dataset_id": "day04_g10_research_group",
   "dataset_role": "group",
-  "description": "Template để NHÓM tự viết đúng 10 case: 5 single-turn dùng query và 5 multi-turn dùng turns. Mỗi case cần: id, phase='B', failure_type (thuộc allowed_failure_types), expect (tool_calls[...] hoặc no_tool=true), và metadata.what_it_tests. File để trống có chủ đích vì mỗi nhóm phải tự thiết kế các case này.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Mười case do nhóm G10 thiết kế để đo routing, argument carry-over, confirmation boundary và tool source_audit mới.",
+  "cases": [
+    {
+      "id": "G01_account_timeline_limit",
+      "phase": "B",
+      "query": "Lấy 2 tweet mới nhất của Sam Altman.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Phân biệt timeline theo tài khoản và trích đúng limit.",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "G02_social_topic_top",
+      "phase": "B",
+      "query": "Tìm các bài đăng top về Gemini trên Twitter.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Gemini",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Tìm social theo chủ đề và map từ top sang search_type=Top.",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "G03_web_news_month",
+      "phase": "B",
+      "query": "Tìm tin an ninh mạng trong tháng này.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "an ninh mạng",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Map yêu cầu tin tức theo tháng sang lookup với đúng topic và timeframe.",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "G04_missing_article_url",
+      "phase": "B",
+      "query": "Đọc và tóm tắt bài báo này cho tôi.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Không tự đoán URL khi user chưa cung cấp link.",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "G05_source_diversity_audit",
+      "phase": "B",
+      "query": "Dùng source_audit kiểm tra độ đa dạng của hai nguồn https://openai.com/research/a và https://anthropic.com/research/b, yêu cầu tối thiểu 2 domain độc lập.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {
+              "min_independent_sources": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routing vào tool mới source_audit khi items đã có và giữ đúng threshold.",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "GM01_correct_timeline_limit",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Lấy 8 tweet mới nhất."
+        },
+        {
+          "role": "user",
+          "content": "Của Sam Altman."
+        },
+        {
+          "role": "user",
+          "content": "Đổi lại chỉ lấy 4 tweet."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Carry account qua nhiều turn và ưu tiên limit được sửa ở turn cuối.",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "GM02_switch_social_to_web",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm mọi người nói gì về AI trên Twitter."
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tin tức trên web."
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề AI và chỉ lấy trong tháng này."
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Chuyển tool theo correction và carry topic sang turn cuối.",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "GM03_url_after_clarification",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này."
+        },
+        {
+          "role": "user",
+          "content": "URL là https://example.com/research-agent."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng URL tôi vừa gửi."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-agent"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Sau khi URL được bổ sung, fetch ngay và không hỏi lại.",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "GM04_send_after_confirmation",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Gửi bản tin AI hôm nay lên Telegram."
+        },
+        {
+          "role": "user",
+          "content": "Nội dung là: AI digest thử nghiệm."
+        },
+        {
+          "role": "user",
+          "content": "Tôi xác nhận, hãy gửi nội dung đó."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Cho phép action tool chỉ sau explicit confirmation và carry nội dung.",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "GM05_update_audit_threshold",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tôi có hai nguồn https://openai.com/a và https://anthropic.com/b."
+        },
+        {
+          "role": "user",
+          "content": "Kiểm tra độ đa dạng nguồn bằng source_audit."
+        },
+        {
+          "role": "user",
+          "content": "Đặt ngưỡng tối thiểu là 3 nguồn độc lập."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {
+              "min_independent_sources": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Carry items qua nhiều turn và áp dụng threshold mới nhất cho tool mới.",
+        "difficulty": "hard"
+      }
+    }
+  ]
 }

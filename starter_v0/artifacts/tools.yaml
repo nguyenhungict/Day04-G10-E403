@@ -9,7 +9,7 @@
 tools:
   # ---------------- Core tools ----------------
   - name: clarify
-    description: "Gửi một câu hỏi cho người dùng."
+    description: "Hỏi người dùng khi thiếu thông tin thiết yếu hoặc cần xác nhận hành động có tác dụng phụ. Dùng response_type=text khi thiếu account/URL; dùng yes_no trước send/post/publish. Không dùng nếu URL hoặc thông tin cần thiết đã có trong hội thoại."
     parameters:
       type: object
       properties:
@@ -19,7 +19,7 @@ tools:
       required: [question]
 
   - name: timeline
-    description: "Lấy các bài đăng gần đây."
+    description: "Lấy bài đăng gần đây CỦA một tài khoản cụ thể. Dùng cho 'tweet của ai'. screenname không có ký tự @. Map Sam Altman->sama, Elon Musk->elonmusk, Andrej Karpathy->karpathy; nếu chưa biết tài khoản thì dùng clarify."
     parameters:
       type: object
       properties:
@@ -28,7 +28,7 @@ tools:
       required: [screenname]
 
   - name: social_search
-    description: "Tìm trên mạng xã hội."
+    description: "Tìm bài đăng mạng xã hội THEO CHỦ ĐỀ/từ khóa từ nhiều tài khoản. Không dùng để lấy timeline của một người. 'phổ biến/top' -> search_type=Top; mặc định Latest."
     parameters:
       type: object
       properties:
@@ -38,7 +38,7 @@ tools:
       required: [query]
 
   - name: lookup
-    description: "Tra cứu thông tin trên internet."
+    description: "Tìm thông tin hoặc tin tức trên web. Dùng topic=news cho yêu cầu tin tức; hôm nay->timeframe=day, tuần này->week, tháng này->month, năm nay->year. Không dùng khi user đã cung cấp URL cụ thể."
     parameters:
       type: object
       properties:
@@ -49,7 +49,7 @@ tools:
       required: [query]
 
   - name: fetch
-    description: "Lấy nội dung từ một địa chỉ."
+    description: "Đọc nội dung tại URL cụ thể đã xuất hiện trong hội thoại để tóm tắt/phân tích. Nếu có URL hợp lệ thì gọi fetch ngay, không hỏi lại và không dùng lookup. Chỉ dùng clarify khi hoàn toàn chưa có URL."
     parameters:
       type: object
       properties:
@@ -57,7 +57,7 @@ tools:
       required: [url]
 
   - name: format
-    description: "Trình bày dữ liệu đã có thành văn bản."
+    description: "Định dạng danh sách items ĐÃ THU THẬP thành markdown digest. Không tìm kiếm hoặc tải dữ liệu. Chỉ gọi khi items có sẵn từ tool result hoặc user."
     parameters:
       type: object
       properties:
@@ -79,13 +79,35 @@ tools:
 
   # ---------------- Bonus tools ----------------
   - name: send
-    description: "Gửi một đoạn văn bản đi."
+    description: "Gửi nội dung lên Telegram, là hành động có tác dụng phụ. Không gọi ở yêu cầu gửi đầu tiên; phải dùng clarify yes_no trước. Chỉ gọi send với confirmed=true sau khi user xác nhận rõ trong hội thoại."
     parameters:
       type: object
       properties:
         text: {type: string, default: "", description: "Nội dung"}
         confirmed: {type: boolean, default: false, description: "Cờ xác nhận"}
       required: [text]
+
+  - name: source_audit
+    description: "Kiểm tra danh sách research items ĐÃ CÓ về URL trùng lặp và độ đa dạng domain nguồn. Không tìm web và không xác minh tính đúng sai của claim. Chỉ dùng khi user yêu cầu audit/kiểm tra nguồn và đã cung cấp items hoặc items có từ tool result."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          default: []
+          description: "Các research item đã thu thập"
+          items:
+            type: object
+            properties:
+              title: {type: string}
+              url: {type: string}
+              source: {type: string}
+              summary: {type: string}
+        min_independent_sources:
+          type: integer
+          default: 2
+          description: "Số domain độc lập tối thiểu mong muốn"
+      required: [items]
 
   - name: policy
     description: "Tìm trong tài liệu nội bộ."
