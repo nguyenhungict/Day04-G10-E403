@@ -1,0 +1,129 @@
+# starter_v0 — tool declarations (intentionally vague).
+# Names and descriptions here are a rough first draft. Routing rules, name->handle
+# mapping, arg conventions (news/timeframe/Top), and the send-confirmation boundary
+# are NOT spelled out anywhere yet. Your job is to make these declarations + the
+# system prompt good enough that the agent routes correctly on the eval.
+#
+# If you rename a tool, keep the name in sync across:
+#   this file  ->  tools/__init__.py (TOOL_FUNCTIONS)  ->  data/eval_base.json + data/eval_research_extension.json
+tools:
+  # ---------------- Control tools ----------------
+  - name: request_guard
+    description: "Classify an ambiguous user request before choosing a research tool. Use only for borderline cases involving missing required details, possible out-of-scope requests, or possible send/post/publish confirmation boundaries. Do not use when the correct direct tool is already clear."
+    parameters:
+      type: object
+      properties:
+        request: {type: string, default: "", description: "The exact latest user request to classify"}
+        mode: {type: string, enum: [research], default: "research", description: "Analysis mode; only research is supported"}
+        max_suggestions: {type: integer, default: 3, description: "Maximum helper suggestions to return"}
+      required: [request]
+
+  # ---------------- Core tools ----------------
+  - name: clarify
+    description: "Ask the user for missing required information or explicit confirmation. Use response_type=text for missing handles, accounts, URLs, or ambiguous targets. Use response_type=yes_no before any send, post, publish, or other external write action."
+    parameters:
+      type: object
+      properties:
+        question: {type: string, default: "", description: "Short question to ask the user"}
+        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Expected answer type; use yes_no for confirmation boundaries"}
+        options: {type: array, default: [], items: {type: string}, description: "Choices when response_type=choice"}
+      required: [question]
+
+  - name: timeline
+    description: "Get recent posts from one specific account/person. Use only when the request names or provides an account. If the account is missing, call clarify instead of guessing. Common mappings: Sam Altman=sama, Elon Musk=elonmusk, Andrej Karpathy=karpathy."
+    parameters:
+      type: object
+      properties:
+        screenname: {type: string, default: "", description: "Account handle without @, e.g. sama, elonmusk, karpathy"}
+        limit: {type: integer, default: 5, description: "Number of recent posts requested"}
+      required: [screenname]
+
+  - name: social_search
+    description: "Search social posts by topic, keyword, product, company, or hashtag. Use for requests like what people are saying about X. Do not use for posts from one named account; use timeline for that."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Core topic or keyword exactly as requested, without adding source words such as news"}
+        search_type: {type: string, enum: [Latest, Top], default: "Latest", description: "Use Top for popular/top/most discussed posts; otherwise Latest"}
+        limit: {type: integer, default: 5, description: "Number of social posts requested"}
+      required: [query]
+
+  - name: lookup
+    description: "Search the web for general information or current news. Use topic=news for news or time-sensitive requests. For 'today' use timeframe=day; 'this week' use week; 'this month' use month; 'this year' use year."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Core search topic; keep concepts like AI or OpenAI separate from topic=news"}
+        topic: {type: string, enum: [general, news], default: "general", description: "Use news for current events or news requests"}
+        timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "day=today, week=this week, month=this month, year=this year"}
+        max_results: {type: integer, default: 5, description: "Maximum web results requested"}
+      required: [query]
+
+  - name: fetch
+    description: "Read and extract content from a concrete URL supplied by the user. If the user says this article/page/link but no URL is present, call clarify instead of inventing a URL."
+    parameters:
+      type: object
+      properties:
+        url: {type: string, default: "", description: "Exact URL provided by the user"}
+      required: [url]
+
+  - name: format
+    description: "Format already available research items into markdown. Use after items exist; do not use as a search, fetch, or answer tool."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          default: []
+          description: "Danh sách item"
+          items:
+            type: object
+            properties:
+              title: {type: string}
+              url: {type: string}
+              source: {type: string}
+              summary: {type: string}
+              section: {type: string}
+        template: {type: string, enum: [brief, sections, bullets, thread, daily_ai_vn], default: "sections", description: "Requested output format"}
+        headline: {type: string, default: "", description: "Optional digest headline"}
+      required: [items, template]
+
+  # ---------------- Bonus tools ----------------
+  - name: send
+    description: "Send text to the configured external channel only after explicit user confirmation. Never use this as a normal answer tool. If confirmed is not already true from the conversation, call clarify with response_type=yes_no first."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Text to send externally"}
+        confirmed: {type: boolean, default: false, description: "True only after explicit user confirmation"}
+      required: [text]
+
+  - name: policy
+    description: "Tìm trong tài liệu nội bộ."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Truy vấn"}
+        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Nhóm"}
+        top_k: {type: integer, default: 3, description: "Số mục"}
+      required: [query]
+
+  - name: papers
+    description: "Tìm bài báo khoa học."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Từ khóa"}
+        max_results: {type: integer, default: 5, description: "Số lượng"}
+        sort_by: {type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "Sắp xếp"}
+      required: [query]
+
+  - name: paper_text
+    description: "Lấy nội dung text của một bài báo."
+    parameters:
+      type: object
+      properties:
+        arxiv_url: {type: string, default: "", description: "ID hoặc địa chỉ"}
+        max_pages: {type: integer, default: 5, description: "Số trang"}
+        max_chars: {type: integer, default: 8000, description: "Số ký tự"}
+      required: [arxiv_url]
